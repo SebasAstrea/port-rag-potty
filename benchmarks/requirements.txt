@@ -1,0 +1,6 @@
+# Dependencias del benchmark (host)
+requests>=2.31
+numpy>=1.26
+scipy>=1.11
+matplotlib>=3.8
+tiktoken>=0.5

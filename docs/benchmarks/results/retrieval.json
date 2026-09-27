@@ -1,0 +1,788 @@
+{
+  "kguard": {
+    "project": "kguard",
+    "rows": [
+      {
+        "first_rank": 5,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.2,
+        "ndcg_at_5": 0.38685280723454163,
+        "id": "kg01",
+        "q": "¿Qué limitaciones técnicas declaradas tiene KGuard frente a Pegasus?",
+        "ranked_files": [
+          "docs/QualityAndTestingStandards.md",
+          "AGENTS.md",
+          "docs/Architecture.md",
+          "AGENTS.md",
+          "docs/Func&NonFuncRequirements.md"
+        ],
+        "gt": [
+          "docs/Func&NonFuncRequirements.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg02",
+        "q": "¿Qué fases tiene el MVP y en qué orden se construye cada una?",
+        "ranked_files": [
+          "docs/MVP_Matrix.md",
+          "docs/MVP_Matrix.md",
+          "docs/MVP_Matrix.md",
+          "docs/MVP_Matrix.md",
+          "docs/MVP_Matrix.md"
+        ],
+        "gt": [
+          "docs/MVP_Matrix.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.8,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg03",
+        "q": "¿Cuál es la arquitectura del sistema y sus capas (kernel, daemon, UI)?",
+        "ranked_files": [
+          "docs/Architecture.md",
+          "docs/Architecture.md",
+          "docs/Architecture.md",
+          "docs/Func&NonFuncRequirements.md",
+          "docs/Architecture.md"
+        ],
+        "gt": [
+          "docs/Architecture.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.8,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg04",
+        "q": "¿Qué debe hacer un agente de IA antes de modificar cualquier archivo del repositorio?",
+        "ranked_files": [
+          "AGENTS.md",
+          "AGENTS.md",
+          "AGENTS.md",
+          "AGENTS.md",
+          "rag/README.md"
+        ],
+        "gt": [
+          "AGENTS.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg05",
+        "q": "¿Cuál es el estado y el definition of done del sprint 2?",
+        "ranked_files": [
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/ChecklistAndScrumWorkflow.md"
+        ],
+        "gt": [
+          "docs/ChecklistAndScrumWorkflow.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg06",
+        "q": "¿Qué estándares de calidad y testing exige el proyecto?",
+        "ranked_files": [
+          "docs/QualityAndTestingStandards.md",
+          "docs/QualityAndTestingStandards.md",
+          "docs/QualityAndTestingStandards.md",
+          "docs/QualityAndTestingStandards.md",
+          "docs/QualityAndTestingStandards.md"
+        ],
+        "gt": [
+          "docs/QualityAndTestingStandards.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.8,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg07",
+        "q": "¿Cómo se parsea el mensaje netlink binario en el daemon Rust?",
+        "ranked_files": [
+          "daemon/src/core/listener.rs",
+          "daemon/src/core/listener.rs",
+          "daemon/src/core/listener.rs",
+          "daemon/src/core/listener.rs",
+          "docs/ChecklistAndScrumWorkflow.md"
+        ],
+        "gt": [
+          "daemon/src/core/listener.rs"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg08",
+        "q": "¿Cómo se calcula la latencia desde la syscall hasta el stdout del daemon?",
+        "ranked_files": [
+          "daemon/src/core/engine.rs",
+          "kernelsrc/README.md",
+          "daemon/src/core/engine.rs",
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/MVP_Matrix.md"
+        ],
+        "gt": [
+          "daemon/src/core/engine.rs"
+        ]
+      },
+      {
+        "first_rank": 3,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.3333333333333333,
+        "ndcg_at_5": 0.5,
+        "id": "kg09",
+        "q": "¿Cómo es la estructura binaria de los eventos compartidos entre kernel y daemon (magic, version, campos)?",
+        "ranked_files": [
+          "daemon/src/core/listener.rs",
+          "daemon/src/core/listener.rs",
+          "daemon/src/core/types.rs",
+          "docs/Architecture.md",
+          "kernelsrc/README.md"
+        ],
+        "gt": [
+          "daemon/src/core/types.rs"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg10",
+        "q": "¿Cómo funciona la cola de eventos del daemon y cuál es su capacidad?",
+        "ranked_files": [
+          "daemon/src/core/queue.rs",
+          "daemon/src/core/queue.rs",
+          "daemon/src/core/queue.rs",
+          "docs/MVP_Matrix.md",
+          "docs/ChecklistAndScrumWorkflow.md"
+        ],
+        "gt": [
+          "daemon/src/core/queue.rs"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg11",
+        "q": "¿Qué es el ring buffer circular lock-free de más de 50k entradas del módulo kernel?",
+        "ranked_files": [
+          "kernelsrc/README.md",
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/ChecklistAndScrumWorkflow.md",
+          "docs/Func&NonFuncRequirements.md",
+          "docs/Architecture.md"
+        ],
+        "gt": [
+          "kernelsrc/README.md"
+        ]
+      },
+      {
+        "first_rank": 3,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.3333333333333333,
+        "ndcg_at_5": 0.5,
+        "id": "kg12",
+        "q": "¿Qué endpoints expone el servidor HTTP del RAG portable?",
+        "ranked_files": [
+          "rag/README.md",
+          "rag/__init__.py",
+          "rag/server.py",
+          "rag/config.py",
+          "rag/server.py"
+        ],
+        "gt": [
+          "rag/server.py"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.8,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg13",
+        "q": "¿Cómo hace el chunker la segmentación semántica por tipo de archivo?",
+        "ranked_files": [
+          "rag/chunker.py",
+          "rag/README.md",
+          "rag/chunker.py",
+          "rag/chunker.py",
+          "rag/chunker.py"
+        ],
+        "gt": [
+          "rag/chunker.py"
+        ]
+      },
+      {
+        "first_rank": 3,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.3333333333333333,
+        "ndcg_at_5": 0.5,
+        "id": "kg14",
+        "q": "¿Cómo funciona la indexación incremental y qué significa drift en las estadísticas?",
+        "ranked_files": [
+          "AGENTS.md",
+          "rag/README.md",
+          "rag/indexer.py",
+          "rag/README.md",
+          "rag/indexer.py"
+        ],
+        "gt": [
+          "rag/indexer.py"
+        ]
+      },
+      {
+        "first_rank": 2,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.5,
+        "ndcg_at_5": 0.6309297535714575,
+        "id": "kg15",
+        "q": "¿Qué campos tiene rag.config.json y cómo se genera la configuración?",
+        "ranked_files": [
+          "rag/README.md",
+          "rag/config.py",
+          "rag/config.py",
+          "rag/config.py",
+          "rag/graph.py"
+        ],
+        "gt": [
+          "rag/config.py"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "kg16",
+        "q": "¿Cómo construye el RAG el grafo de categorías, tokens y archivos?",
+        "ranked_files": [
+          "rag/graph.py",
+          "rag/README.md",
+          "rag/config.py",
+          "rag/server.py",
+          "rag/chunker.py"
+        ],
+        "gt": [
+          "rag/graph.py"
+        ]
+      }
+    ],
+    "stats": {
+      "observed": {
+        "hit_at_1": 0.6875,
+        "hit_at_5": 1.0,
+        "precision_at_5": 0.5875,
+        "recall_at_5": 1.0,
+        "mrr": 0.79375,
+        "ndcg_at_5": 0.844861410050375
+      },
+      "mrr_bootstrap_ci95": [
+        0.5,
+        1.0
+      ],
+      "recall_at_5_bootstrap_ci95": [
+        1.0,
+        1.0
+      ],
+      "random_baseline": {
+        "B": 5000,
+        "mrr_mean": 0.10749937499999998,
+        "mrr_p95": 0.21875,
+        "precision_at_5_mean": 0.050910000000000004,
+        "recall_at_5_mean": 0.2223125
+      },
+      "permutation_p": {
+        "mrr": 0.0001999600079984003,
+        "precision_at_5": 0.0001999600079984003,
+        "recall_at_5": 0.0001999600079984003
+      },
+      "n_chunks_corpus": 216,
+      "n_files_corpus": 26
+    }
+  },
+  "visionrt": {
+    "project": "visionrt",
+    "rows": [
+      {
+        "first_rank": 5,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.2,
+        "ndcg_at_5": 0.38685280723454163,
+        "id": "vr01",
+        "q": "¿Cuál es la arquitectura de VisionRT y su estructura de módulos Gradle?",
+        "ranked_files": [
+          "settings.gradle.kts",
+          "perception/build.gradle.kts",
+          "app/build.gradle.kts",
+          "feature/build.gradle.kts",
+          "docs/ARCHITECTURE.md"
+        ],
+        "gt": [
+          "docs/ARCHITECTURE.md"
+        ]
+      },
+      {
+        "first_rank": 5,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.2,
+        "ndcg_at_5": 0.38685280723454163,
+        "id": "vr02",
+        "q": "¿Qué requisitos de producto y restricciones funcionales tiene VisionRT?",
+        "ranked_files": [
+          "feature/src/main/java/com/visionrt/feature/settings/SettingsFragment.kt",
+          "docs/ROADMAP.md",
+          "app/src/androidTest/java/com/visionrt/app/OnboardingFlowTest.kt",
+          "app/src/main/java/com/visionrt/app/assistance/ObstacleAssistanceCoordinator.kt",
+          "docs/REQUIREMENTS.md"
+        ],
+        "gt": [
+          "docs/REQUIREMENTS.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 1.0,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr03",
+        "q": "¿Cuál es el roadmap del proyecto y en qué fase se encuentra?",
+        "ranked_files": [
+          "docs/ROADMAP.md",
+          "docs/ROADMAP.md",
+          "docs/ROADMAP.md",
+          "docs/ROADMAP.md",
+          "docs/ROADMAP.md"
+        ],
+        "gt": [
+          "docs/ROADMAP.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr04",
+        "q": "¿Qué debe hacer un agente de IA antes de modificar archivos en este repositorio?",
+        "ranked_files": [
+          "AGENTS.md",
+          "AGENTS.md",
+          "docs/AGENTS.md",
+          "AGENTS.md",
+          "docs/AGENTS.md"
+        ],
+        "gt": [
+          "AGENTS.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.8,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr05",
+        "q": "¿Qué reglas de codificación obligatorias imponen las instrucciones de agente?",
+        "ranked_files": [
+          "docs/AGENTS.md",
+          "docs/ROADMAP.md",
+          "docs/AGENTS.md",
+          "docs/AGENTS.md",
+          "docs/AGENTS.md"
+        ],
+        "gt": [
+          "docs/AGENTS.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr06",
+        "q": "¿Qué informes de hito y resultados M7 hay documentados?",
+        "ranked_files": [
+          "docs/M7_REPORTS.md",
+          "docs/M7_REPORTS.md",
+          "docs/ROADMAP.md",
+          "docs/ROADMAP.md",
+          "docs/ROADMAP.md"
+        ],
+        "gt": [
+          "docs/M7_REPORTS.md"
+        ]
+      },
+      {
+        "first_rank": 2,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.5,
+        "ndcg_at_5": 0.6309297535714575,
+        "id": "vr07",
+        "q": "¿Cómo se estructura el esquema de anotación del dataset de detecciones?",
+        "ranked_files": [
+          "tools/dataset_validation/evaluate_detections.py",
+          "docs/DATASET_SCHEMA.md",
+          "docs/DATASET_SCHEMA.md",
+          "tools/dataset_validation/schema/annotation_schema.json",
+          "tools/dataset_validation/schema/annotation_schema.json"
+        ],
+        "gt": [
+          "docs/DATASET_SCHEMA.md"
+        ]
+      },
+      {
+        "first_rank": 2,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.5,
+        "ndcg_at_5": 0.6309297535714575,
+        "id": "vr08",
+        "q": "¿Qué dispositivos de bajo coste se recomiendan comprar para las pruebas?",
+        "ranked_files": [
+          "docs/REQUIREMENTS.md",
+          "docs/DEVICE_PROCUREMENT.md",
+          "docs/REQUIREMENTS.md",
+          "docs/M7_REPORTS.md",
+          "docs/DEVICE_PROCUREMENT.md"
+        ],
+        "gt": [
+          "docs/DEVICE_PROCUREMENT.md"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr09",
+        "q": "¿Cómo funciona el frame gate latest-only de la cámara?",
+        "ranked_files": [
+          "perception/src/main/java/com/visionrt/perception/framegate/LatestOnlyFrameGate.kt",
+          "perception/src/main/java/com/visionrt/perception/framegate/FrameGate.kt",
+          "perception/src/test/java/com/visionrt/perception/framegate/LatestOnlyFrameGateTest.kt",
+          "core/src/main/java/com/visionrt/core/orchestration/LatestOnlyChannel.kt",
+          "docs/ARCHITECTURE.md"
+        ],
+        "gt": [
+          "perception/src/main/java/com/visionrt/perception/framegate/LatestOnlyFrameGate.kt",
+          "perception/src/main/java/com/visionrt/perception/framegate/FrameGate.kt"
+        ]
+      },
+      {
+        "first_rank": 2,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.6,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.5,
+        "ndcg_at_5": 0.6309297535714575,
+        "id": "vr10",
+        "q": "¿Cómo detecta objetos el modelo con LiteRT en inferencia on-device?",
+        "ranked_files": [
+          "inference/src/main/java/com/visionrt/inference/runtimeapi/ObjectDetector.kt",
+          "inference/src/main/java/com/visionrt/inference/litert/LiteRtObjectDetector.kt",
+          "inference/src/main/java/com/visionrt/inference/litert/LiteRtObjectDetector.kt",
+          "docs/ARCHITECTURE.md",
+          "inference/src/main/java/com/visionrt/inference/litert/LiteRtObjectDetector.kt"
+        ],
+        "gt": [
+          "inference/src/main/java/com/visionrt/inference/litert/LiteRtObjectDetector.kt"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 0.5,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 0.6131471927654584,
+        "id": "vr11",
+        "q": "¿Cuál es la política de alertas del orquestador de detecciones?",
+        "ranked_files": [
+          "core/src/main/java/com/visionrt/core/orchestration/AlertPolicy.kt",
+          "core/src/test/java/com/visionrt/core/orchestration/OrchestrationTest.kt",
+          "docs/REQUIREMENTS.md",
+          "docs/REQUIREMENTS.md",
+          "core/src/test/java/com/visionrt/core/orchestration/OrchestrationTest.kt"
+        ],
+        "gt": [
+          "core/src/main/java/com/visionrt/core/orchestration/AlertPolicy.kt",
+          "core/src/main/java/com/visionrt/core/orchestration/AlertPipeline.kt"
+        ]
+      },
+      {
+        "first_rank": 3,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.4,
+        "recall_at_5": 0.5,
+        "reciprocal_rank": 0.3333333333333333,
+        "ndcg_at_5": 0.3065735963827292,
+        "id": "vr12",
+        "q": "¿Quién vigila el presupuesto de memoria del dispositivo y cómo degrada?",
+        "ranked_files": [
+          "docs/ARCHITECTURE.md",
+          "docs/ARCHITECTURE.md",
+          "core/src/main/java/com/visionrt/core/memory/MemoryBudgetMonitor.kt",
+          "core/src/main/java/com/visionrt/core/memory/MemoryBudgetMonitor.kt",
+          "docs/AGENTS.md"
+        ],
+        "gt": [
+          "core/src/main/java/com/visionrt/core/memory/MemoryBudgetMonitor.kt",
+          "core/src/main/java/com/visionrt/core/resource/ResourceGovernor.kt"
+        ]
+      },
+      {
+        "first_rank": null,
+        "hit_at_1": false,
+        "hit_at_5": false,
+        "precision_at_5": 0.0,
+        "recall_at_5": 0.0,
+        "reciprocal_rank": 0.0,
+        "ndcg_at_5": 0.0,
+        "id": "vr13",
+        "q": "¿Cómo funciona la lectura de texto por OCR y su ciclo de vida?",
+        "ranked_files": [
+          "docs/REQUIREMENTS.md",
+          "docs/ARCHITECTURE.md",
+          "core/src/main/java/com/visionrt/core/ocr/OcrLifecycle.kt",
+          "docs/ARCHITECTURE.md",
+          "core/src/main/java/com/visionrt/core/ocr/TextRecognizer.kt"
+        ],
+        "gt": [
+          "core/src/main/java/com/visionrt/core/ocr/TextReadingService.kt"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr14",
+        "q": "¿Cómo se lee y valida el manifiesto de modelos del dispositivo?",
+        "ranked_files": [
+          "inference/src/main/java/com/visionrt/inference/manifest/ModelManifest.kt",
+          "docs/REQUIREMENTS.md",
+          "inference/src/main/java/com/visionrt/inference/manifest/ModelManifestJson.kt",
+          "inference/src/test/java/com/visionrt/inference/manifest/ModelManifestJsonTest.kt",
+          "docs/ARCHITECTURE.md"
+        ],
+        "gt": [
+          "inference/src/main/java/com/visionrt/inference/manifest/ModelManifest.kt"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr15",
+        "q": "¿Qué mide el benchmark de detectores y cómo calcula latencia?",
+        "ranked_files": [
+          "benchmark/src/main/java/com/visionrt/benchmark/detector/DetectorBenchmark.kt",
+          "benchmark/src/test/java/com/visionrt/benchmark/detector/DetectorBenchmarkTest.kt",
+          "docs/ARCHITECTURE.md",
+          "docs/REQUIREMENTS.md",
+          "app/src/main/java/com/visionrt/app/diagnostics/DetectorBenchmarkRunner.kt"
+        ],
+        "gt": [
+          "benchmark/src/main/java/com/visionrt/benchmark/detector/DetectorBenchmark.kt"
+        ]
+      },
+      {
+        "first_rank": 4,
+        "hit_at_1": false,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 0.25,
+        "ndcg_at_5": 0.43067655807339306,
+        "id": "vr16",
+        "q": "¿Cómo decide el dispatcher de feedback la prioridad de TTS y vibración?",
+        "ranked_files": [
+          "feedback/src/main/java/com/visionrt/feedback/FeedbackDispatcher.kt",
+          "docs/ROADMAP.md",
+          "docs/ARCHITECTURE.md",
+          "feedback/src/main/java/com/visionrt/feedback/PriorityFeedbackDispatcher.kt",
+          "docs/REQUIREMENTS.md"
+        ],
+        "gt": [
+          "feedback/src/main/java/com/visionrt/feedback/PriorityFeedbackDispatcher.kt"
+        ]
+      },
+      {
+        "first_rank": 1,
+        "hit_at_1": true,
+        "hit_at_5": true,
+        "precision_at_5": 0.2,
+        "recall_at_5": 1.0,
+        "reciprocal_rank": 1.0,
+        "ndcg_at_5": 1.0,
+        "id": "vr17",
+        "q": "¿Cómo funciona el narrador de accesibilidad para lectura de pantalla?",
+        "ranked_files": [
+          "feature/src/main/java/com/visionrt/feature/accessibility/ScreenNarrator.kt",
+          "feature/src/test/java/com/visionrt/feature/accessibility/ScreenNarratorTest.kt",
+          "feature/src/main/java/com/visionrt/feature/voice/AccessibilityScreenReaderGate.kt",
+          "docs/REQUIREMENTS.md",
+          "docs/AGENTS.md"
+        ],
+        "gt": [
+          "feature/src/main/java/com/visionrt/feature/accessibility/ScreenNarrator.kt"
+        ]
+      }
+    ],
+    "stats": {
+      "observed": {
+        "hit_at_1": 0.5294117647058824,
+        "hit_at_5": 0.9411764705882353,
+        "precision_at_5": 0.37647058823529417,
+        "recall_at_5": 0.8823529411764706,
+        "mrr": 0.6754901960784313,
+        "ndcg_at_5": 0.7068760130826492
+      },
+      "mrr_bootstrap_ci95": [
+        0.3333333333333333,
+        1.0
+      ],
+      "recall_at_5_bootstrap_ci95": [
+        1.0,
+        1.0
+      ],
+      "random_baseline": {
+        "B": 5000,
+        "mrr_mean": 0.061746862745098045,
+        "mrr_p95": 0.13725490196078433,
+        "precision_at_5_mean": 0.03077882352941176,
+        "recall_at_5_mean": 0.1218
+      },
+      "permutation_p": {
+        "mrr": 0.0001999600079984003,
+        "precision_at_5": 0.0001999600079984003,
+        "recall_at_5": 0.0001999600079984003
+      },
+      "n_chunks_corpus": 727,
+      "n_files_corpus": 157
+    }
+  },
+  "_pooled": {
+    "n": 33,
+    "hit_at_1": 0.6060606060606061,
+    "hit_at_5": 0.9696969696969697,
+    "mrr": 0.7328282828282827,
+    "precision_at_5": 0.47878787878787876,
+    "recall_at_5": 0.9393939393939394,
+    "ndcg_at_5": 0.7737780237336678,
+    "mrr_bootstrap_ci95": [
+      0.5,
+      1.0
+    ],
+    "misses": [
+      "vr13"
+    ]
+  }
+}

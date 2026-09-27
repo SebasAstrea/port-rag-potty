@@ -1,0 +1,162 @@
+{
+  "kguard": {
+    "host": "http://ollama:11434",
+    "model": "bge-m3",
+    "model_meta": {
+      "name": "bge-m3:latest",
+      "size_bytes": 1157672605,
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "bert",
+        "families": [
+          "bert"
+        ],
+        "parameter_size": "566.70M",
+        "quantization_level": "F16",
+        "context_length": 8192,
+        "embedding_length": 1024
+      },
+      "modified_at": "2026-09-21T16:55:16.807659472Z"
+    },
+    "latency_by_chars": {
+      "64": {
+        "n": 15,
+        "mean_ms": 26.66442146607248,
+        "p50_ms": 26.51821999825188,
+        "p95_ms": 27.995576998364413,
+        "min_ms": 24.716627998714102,
+        "max_ms": 28.293522002059035,
+        "dim": 1024,
+        "prompt_eval_count": 15.0
+      },
+      "256": {
+        "n": 15,
+        "mean_ms": 61.23039280040151,
+        "p50_ms": 60.697188000631286,
+        "p95_ms": 66.41904400021303,
+        "min_ms": 59.42841499927454,
+        "max_ms": 66.74933999966015,
+        "dim": 1024,
+        "prompt_eval_count": 52.0
+      },
+      "1024": {
+        "n": 15,
+        "mean_ms": 211.3448966665601,
+        "p50_ms": 211.18039100110764,
+        "p95_ms": 215.5300989979878,
+        "min_ms": 207.24225300000398,
+        "max_ms": 216.00264299922856,
+        "dim": 1024,
+        "prompt_eval_count": 203.0
+      },
+      "4000": {
+        "n": 15,
+        "mean_ms": 934.9729300006098,
+        "p50_ms": 932.4139849995845,
+        "p95_ms": 948.2862740005658,
+        "min_ms": 922.0755159985856,
+        "max_ms": 959.3689730027108,
+        "dim": 1024,
+        "prompt_eval_count": 792.0
+      }
+    },
+    "latency_real_queries": {
+      "n": 16,
+      "mean_ms": 30.17748800039044,
+      "p50_ms": 29.511133001506096,
+      "p95_ms": 35.36708799947519,
+      "min_ms": 26.104446002136683,
+      "max_ms": 38.2592649984872
+    },
+    "throughput_32x512chars": {
+      "batch_total_ms": 3373.9486479971674,
+      "batch_per_text_ms": 105.43589524991148,
+      "seq_total_ms": 3511.10014400183,
+      "seq_per_text_ms": 109.72187950005718,
+      "speedup_batch": 1.040650143293105,
+      "batch_texts_per_s": 9.484435994304697,
+      "seq_texts_per_s": 9.113952518462636
+    }
+  },
+  "visionrt": {
+    "host": "http://ollama:11434",
+    "model": "bge-m3",
+    "model_meta": {
+      "name": "bge-m3:latest",
+      "size_bytes": 1157672605,
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "bert",
+        "families": [
+          "bert"
+        ],
+        "parameter_size": "566.70M",
+        "quantization_level": "F16",
+        "context_length": 8192,
+        "embedding_length": 1024
+      },
+      "modified_at": "2026-09-22T17:38:58.618785517Z"
+    },
+    "latency_by_chars": {
+      "64": {
+        "n": 15,
+        "mean_ms": 25.988858200192528,
+        "p50_ms": 25.88853799898061,
+        "p95_ms": 26.785586000187322,
+        "min_ms": 25.075087000004714,
+        "max_ms": 27.341549000993837,
+        "dim": 1024,
+        "prompt_eval_count": 15.0
+      },
+      "256": {
+        "n": 15,
+        "mean_ms": 60.62669819972749,
+        "p50_ms": 60.330632997647626,
+        "p95_ms": 62.91125099960482,
+        "min_ms": 58.8922899987665,
+        "max_ms": 63.2938250018924,
+        "dim": 1024,
+        "prompt_eval_count": 52.0
+      },
+      "1024": {
+        "n": 15,
+        "mean_ms": 216.9352162668171,
+        "p50_ms": 216.90315900195856,
+        "p95_ms": 219.81376099938643,
+        "min_ms": 213.19620899885194,
+        "max_ms": 223.2006949998322,
+        "dim": 1024,
+        "prompt_eval_count": 203.0
+      },
+      "4000": {
+        "n": 15,
+        "mean_ms": 954.947213333071,
+        "p50_ms": 951.5854919991398,
+        "p95_ms": 989.7945020020416,
+        "min_ms": 924.2635899972811,
+        "max_ms": 993.8514450004732,
+        "dim": 1024,
+        "prompt_eval_count": 792.0
+      }
+    },
+    "latency_real_queries": {
+      "n": 17,
+      "mean_ms": 28.64751105923514,
+      "p50_ms": 28.514860998257063,
+      "p95_ms": 31.492791000346188,
+      "min_ms": 25.74032700067619,
+      "max_ms": 32.470071000716416
+    },
+    "throughput_32x512chars": {
+      "batch_total_ms": 3486.528028999601,
+      "batch_per_text_ms": 108.95400090623752,
+      "seq_total_ms": 3510.6301929990877,
+      "seq_per_text_ms": 109.70719353122149,
+      "speedup_batch": 1.006912941413066,
+      "batch_texts_per_s": 9.178185212864,
+      "seq_texts_per_s": 9.115172558993688
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "project": "visionrt",
+  "service": "http://localhost:8767",
+  "root": "/home/sebastian/Descargas/Android/VisionRT",
+  "notes": "Consultas reales de agente sobre VisionRT (app Android de asistencia visual). gt = archivos indexados en visionrt_chunks (verificado contra manifest).",
+  "queries": [
+    {"id": "vr01", "q": "¿Cuál es la arquitectura de VisionRT y su estructura de módulos Gradle?", "gt": ["docs/ARCHITECTURE.md"]},
+    {"id": "vr02", "q": "¿Qué requisitos de producto y restricciones funcionales tiene VisionRT?", "gt": ["docs/REQUIREMENTS.md"]},
+    {"id": "vr03", "q": "¿Cuál es el roadmap del proyecto y en qué fase se encuentra?", "gt": ["docs/ROADMAP.md"]},
+    {"id": "vr04", "q": "¿Qué debe hacer un agente de IA antes de modificar archivos en este repositorio?", "gt": ["AGENTS.md"]},
+    {"id": "vr05", "q": "¿Qué reglas de codificación obligatorias imponen las instrucciones de agente?", "gt": ["docs/AGENTS.md"]},
+    {"id": "vr06", "q": "¿Qué informes de hito y resultados M7 hay documentados?", "gt": ["docs/M7_REPORTS.md"]},
+    {"id": "vr07", "q": "¿Cómo se estructura el esquema de anotación del dataset de detecciones?", "gt": ["docs/DATASET_SCHEMA.md"]},
+    {"id": "vr08", "q": "¿Qué dispositivos de bajo coste se recomiendan comprar para las pruebas?", "gt": ["docs/DEVICE_PROCUREMENT.md"]},
+    {"id": "vr09", "q": "¿Cómo funciona el frame gate latest-only de la cámara?", "gt": ["perception/src/main/java/com/visionrt/perception/framegate/LatestOnlyFrameGate.kt", "perception/src/main/java/com/visionrt/perception/framegate/FrameGate.kt"]},
+    {"id": "vr10", "q": "¿Cómo detecta objetos el modelo con LiteRT en inferencia on-device?", "gt": ["inference/src/main/java/com/visionrt/inference/litert/LiteRtObjectDetector.kt"]},
+    {"id": "vr11", "q": "¿Cuál es la política de alertas del orquestador de detecciones?", "gt": ["core/src/main/java/com/visionrt/core/orchestration/AlertPolicy.kt", "core/src/main/java/com/visionrt/core/orchestration/AlertPipeline.kt"]},
+    {"id": "vr12", "q": "¿Quién vigila el presupuesto de memoria del dispositivo y cómo degrada?", "gt": ["core/src/main/java/com/visionrt/core/memory/MemoryBudgetMonitor.kt", "core/src/main/java/com/visionrt/core/resource/ResourceGovernor.kt"]},
+    {"id": "vr13", "q": "¿Cómo funciona la lectura de texto por OCR y su ciclo de vida?", "gt": ["core/src/main/java/com/visionrt/core/ocr/TextReadingService.kt"]},
+    {"id": "vr14", "q": "¿Cómo se lee y valida el manifiesto de modelos del dispositivo?", "gt": ["inference/src/main/java/com/visionrt/inference/manifest/ModelManifest.kt"]},
+    {"id": "vr15", "q": "¿Qué mide el benchmark de detectores y cómo calcula latencia?", "gt": ["benchmark/src/main/java/com/visionrt/benchmark/detector/DetectorBenchmark.kt"]},
+    {"id": "vr16", "q": "¿Cómo decide el dispatcher de feedback la prioridad de TTS y vibración?", "gt": ["feedback/src/main/java/com/visionrt/feedback/PriorityFeedbackDispatcher.kt"]},
+    {"id": "vr17", "q": "¿Cómo funciona el narrador de accesibilidad para lectura de pantalla?", "gt": ["feature/src/main/java/com/visionrt/feature/accessibility/ScreenNarrator.kt"]}
+  ]
+}

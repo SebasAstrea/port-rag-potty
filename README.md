@@ -4,8 +4,9 @@
 
 > **RAG con ChromaDB + Ollama, «cópialo y funciona».** Sirve a tus agentes de
 > IA (opencode, Claude, Cursor, Cline…) contexto curado de cualquier proyecto:
-> reduce de ~80-150k tokens de lectura de archivos a ~3-5k de respuestas HTTP
-> precisas.
+> medido sobre despliegues reales, reduce la sesión de agente de **~18-42k
+> tokens** (documentación de onboarding) a **~6-9k**, con consultas sueltas de
+> **~1,4-2,1k tokens** (ver [Benchmarks](#benchmarks-medido-con-datos-reales)).
 
 Un directorio `rag/` + una plantilla `AGENTS.md` que se copian dentro de
 **cualquier** proyecto. No está atado a ningún tipo de código (frontend, Python,
@@ -16,14 +17,42 @@ auto-generado.
 
 ## Qué resuelve
 
-Un agente nuevo que entra a un repo desconocido hoy se lee README + archivos al
-completo (80-150k tokens). Con el RAG hace 4-5 llamadas HTTP (~3-5k tokens) y
-tiene:
+Un agente nuevo que entra a un repo desconocido hoy se lee README + docs al
+completo (medido: **23k-43k tokens** de onboarding; el corpus íntegro llega a
+**63k-264k**). Con el RAG hace llamadas HTTP de ~1,5-2k tokens y tiene:
 
 - **`/methodology`** — el «alma» del proyecto: propósito, arquitectura,
   convenciones (chunks de README/AGENTS marcados como methodology).
 - **`/query`** — búsqueda semántica sobre todo el código (embeddings bge-m3).
 - **`/categories`** — grupos (temas CSS, módulos…) y sus tokens/archivos (opcional).
+
+---
+
+## Benchmarks (medido con datos reales)
+
+Ejecutado el **2026-09-26** sobre los dos despliegues vivos — **KGuard** (:8766,
+216 chunks / 26 archivos) y **VisionRT** (:8767, 727 chunks / 157 archivos) —
+con 33 consultas reales curadas con ground-truth verificado. **Todas las
+pruebas estadísticas** (Wilcoxon, test de signo, bootstrap, permutaciones,
+Mann-Whitney) están en **[`docs/benchmarks/REPORT.md`](docs/benchmarks/REPORT.md)**
+; los scripts para reproducirlo, en [`benchmarks/`](benchmarks/).
+
+| Métrica | Resultado |
+|---|---|
+| **Ahorro de tokens por consulta** (mediana, n=33) | **+801 tok** (IC95 [−1, 1071]) — Wilcoxon **p = 0,0169** |
+| Condición de rentabilidad | destino **≥ 2k tok → +1 121** (p = 2·10⁻⁶); destino **< 2k tok → −786** (conviene leer el archivo) |
+| **Calidad de recuperación** | **hit@5 = 96,97 %**, MRR = 0,733 vs 0,06-0,11 del azar — permutación **p = 0,0002** |
+| Sesión completa (alma + 1 consulta) | KGuard 18 214 → **6 258 tok (×2,9)** · VisionRT 41 767 → **9 328 (×4,5)** |
+| Latencia `/query` (n=100/proyecto) | p50 ≈ 42 ms, **p95 ≤ 50 ms** |
+| Embeddings bge-m3 (566,7M, F16, dim 1024) | **~30 ms/consulta**, 9,1 txt/s en CPU (batch sin beneficio) |
+
+![Distribución del ahorro de tokens](docs/benchmarks/figs/fig02_savings_hist.png)
+
+**Veredicto:** ahorra de forma **significativa y con calidad alta**, pero su
+ahorro es **condicional al tamaño del destino** (cruza por cero en ~1,7-2k
+tokens) —12 de33 consultas medidas gastan más que la lectura directa. El
+antiguo claim «80-150k → 3-5k» estaba desviado en ambas direcciones (detalle
+en el informe).
 
 ---
 
@@ -147,6 +176,8 @@ Variables de entorno: `OLLAMA_HOST`, `RAG_EMBED_MODEL`, `RAG_EMBED_DIM`,
 AGENTS.md             ← instrucciones obligatorias para agentes de IA (plantilla)
 README.md             ← este archivo
 setup.sh / setup.ps1  ← instalación automatizada vía Docker
+benchmarks/           ← suite de benchmark (33 consultas, tests de hipótesis)
+docs/benchmarks/      ← informe estadístico + figuras + resultados crudos
 rag/
   server.py           ← API HTTP (FastAPI)
   indexer.py          ← chunk + embed + upsert + reconciliación

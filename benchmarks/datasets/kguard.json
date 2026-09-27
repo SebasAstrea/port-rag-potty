@@ -1,0 +1,24 @@
+{
+  "project": "kguard",
+  "service": "http://localhost:8766",
+  "root": "/home/sebastian/Descargas/Android/KGuard",
+  "notes": "Consultas reales de agente sobre KGuard. gt = archivos indexados en kguard_chunks (verificado contra manifest). NOTA: kernelsrc/*.c y *.h NO estan en index_globs; las preguntas de kernel apuntan a kernelsrc/README.md, la unica fuente indexada.",
+  "queries": [
+    {"id": "kg01", "q": "¿Qué limitaciones técnicas declaradas tiene KGuard frente a Pegasus?", "gt": ["docs/Func&NonFuncRequirements.md"]},
+    {"id": "kg02", "q": "¿Qué fases tiene el MVP y en qué orden se construye cada una?", "gt": ["docs/MVP_Matrix.md"]},
+    {"id": "kg03", "q": "¿Cuál es la arquitectura del sistema y sus capas (kernel, daemon, UI)?", "gt": ["docs/Architecture.md"]},
+    {"id": "kg04", "q": "¿Qué debe hacer un agente de IA antes de modificar cualquier archivo del repositorio?", "gt": ["AGENTS.md"]},
+    {"id": "kg05", "q": "¿Cuál es el estado y el definition of done del sprint 2?", "gt": ["docs/ChecklistAndScrumWorkflow.md"]},
+    {"id": "kg06", "q": "¿Qué estándares de calidad y testing exige el proyecto?", "gt": ["docs/QualityAndTestingStandards.md"]},
+    {"id": "kg07", "q": "¿Cómo se parsea el mensaje netlink binario en el daemon Rust?", "gt": ["daemon/src/core/listener.rs"]},
+    {"id": "kg08", "q": "¿Cómo se calcula la latencia desde la syscall hasta el stdout del daemon?", "gt": ["daemon/src/core/engine.rs"]},
+    {"id": "kg09", "q": "¿Cómo es la estructura binaria de los eventos compartidos entre kernel y daemon (magic, version, campos)?", "gt": ["daemon/src/core/types.rs"]},
+    {"id": "kg10", "q": "¿Cómo funciona la cola de eventos del daemon y cuál es su capacidad?", "gt": ["daemon/src/core/queue.rs"]},
+    {"id": "kg11", "q": "¿Qué es el ring buffer circular lock-free de más de 50k entradas del módulo kernel?", "gt": ["kernelsrc/README.md"]},
+    {"id": "kg12", "q": "¿Qué endpoints expone el servidor HTTP del RAG portable?", "gt": ["rag/server.py"]},
+    {"id": "kg13", "q": "¿Cómo hace el chunker la segmentación semántica por tipo de archivo?", "gt": ["rag/chunker.py"]},
+    {"id": "kg14", "q": "¿Cómo funciona la indexación incremental y qué significa drift en las estadísticas?", "gt": ["rag/indexer.py"]},
+    {"id": "kg15", "q": "¿Qué campos tiene rag.config.json y cómo se genera la configuración?", "gt": ["rag/config.py"]},
+    {"id": "kg16", "q": "¿Cómo construye el RAG el grafo de categorías, tokens y archivos?", "gt": ["rag/graph.py"]}
+  ]
+}
