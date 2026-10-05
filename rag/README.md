@@ -28,6 +28,11 @@ ollama pull bge-m3
 
 ### 1.2. Copiar el RAG al proyecto
 
+> **Atajo de 1 ejecución** (recomendado): desde la raíz de este repo,
+> `./setup.sh <tu-proyecto>` (o `.\setup.ps1 <tu-proyecto>`) — copia el motor,
+> monta Ollama + servicio, autoindexa hasta `drift = 0` y valida con un smoke
+> test. Ver la tabla de flags en el README raíz («Instalación»).
+
 ```bash
 cp -r <ruta-al-rag>/rag  <tu-proyecto>/rag
 cp <ruta-al-rag>/AGENTS.md       <tu-proyecto>/AGENTS.md   # opcional

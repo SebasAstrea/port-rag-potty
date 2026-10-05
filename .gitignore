@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+rag/data/
+rag/.venv/
+rag.config.json
+docker-compose.rag.yml

@@ -88,29 +88,67 @@ cd rag-portable
 .\setup.ps1 C:\ruta\al\proyecto
 ```
 
-Parámetros y variables (en ambos scripts):
+Parámetros y variables (en ambos scripts; flags en bash con `--`, en PowerShell con `-`):
 
 | Flag / variable | Descripción | Default |
 |---|---|---|
 | `<proyecto>` | Directorio a indexar | `.` |
-| `--force` | Reindex `force=true` (re-embebe todo; **lento** en CPU) | off |
-| `RAG_PORT` | Puerto host del RAG | `8765` |
+| `--force` / `-Force` | Reindex `force=true` (re-embebe todo; **lento** en CPU) | off |
+| `--dry-run` / `-DryRun` | Prepara archivos y valida el compose sin arrancar nada | off |
+| `--local` / `-Local` | Sin Docker de servicio: venv + `python -m rag.server` | off |
+| `--down` / `-Down` | Para el servicio del proyecto (**no** borra volúmenes) | — |
+| `--status` / `-Status` | Informa del estado (exit 1 si el servicio está caído) | — |
+| `--port N` / `-Port N` | Puerto inicial; si está ocupado autoincrementa (≤20) | `8765` |
+| `--no-agents` / `-NoAgents` | No copiar la plantilla `AGENTS.md` | off |
+| `RAG_PORT` | Puerto inicial (equivale a `--port`) | `8765` |
 | `RAG_EMBED_MODEL` | Modelo de embeddings a pullear/usar | `bge-m3` |
 | `RAG_EMBED_DIM` | Dimensión del vector | `1024` |
-| `RAG_COLLECTION` | Override del nombre de colección Chroma | `<proyecto>_chunks` |
+| `RAG_COLLECTION` | Override del nombre de colección Chroma | `<slug>_chunks` |
+| `RAG_INDEX_TIMEOUT` | Segundos máx. esperando el reindex | `1800` |
+| `RAG_OLLAMA_VOLUME` | Volumen Docker ya poblado con el modelo (ahorra el pull; p.ej. `rag-visionrt_ollama_data`) | — |
+| `RAG_REPO` | URL git del RAG (solo si el script está fuera del repo) | — |
+| `OLLAMA_HOST` | URL de un Ollama existente a reutilizar | autodetecta |
 
 Qué hace exactamente:
 
-1. Copia `rag/` (+ plantilla `AGENTS.md`, si el proyecto no tiene una) al destino.
-2. Genera `docker-compose.rag.yml` (servicios `ollama` + `rag`).
-3. Arranca Ollama en contenedor y pullea `bge-m3`.
-4. Arranca el RAG en `http://localhost:8765`.
-5. Lanza `POST /reindex` y espera a que termine (`drift == 0`).
+1. **Puerto seguro**: si en el puerto ya responde **este** proyecto (compara
+   `config.collection`) lo reutiliza; si lo ocupa otro servicio, incrementa el
+   puerto (hasta +20) y re-valida la identidad tras arrancar — nunca mandas un
+   `/reindex` al RAG de otro proyecto.
+2. Copia `rag/` de forma **limpia** (sin `data/`, `__pycache__` ni `.venv`;
+   si destino == repo del RAG, omite la copia) + plantilla `AGENTS.md` con el
+   puerto real (solo si el proyecto aún no tiene una). Conviene ignorar en tu
+   `.gitignore` los artefactos de runtime: `rag/data/`, `rag.config.json` y
+   `docker-compose.rag.yml`.
+3. Genera `docker-compose.rag.yml` con todos los scalars comillados. **Reutiliza
+   un Ollama accesible con el modelo** (host o `OLLAMA_HOST`); si no, levanta un
+   contenedor — opcionalmente montando `RAG_OLLAMA_VOLUME` con el modelo ya
+   descargado.
+4. Arranca el RAG y espera a que `/health` responda (detecta crashes del
+   contenedor en vez de esperar en vano).
+5. `POST /reindex` con **timeout** (`RAG_INDEX_TIMEOUT`), tolerando `409`
+   (reindex en curso) y exigiendo `drift == 0`; ante error imprime los últimos
+   logs.
+6. **Smoke test**: `/health` (identidad + Ollama), `/methodology` (chunks del
+   alma) y `/query` de prueba con top-1.
+7. Resumen final con comandos de arranque/parada/estado.
 
-Después de tocar archivos, re-indexa con:
+Gestión del servicio ya montado:
 
 ```bash
-curl -X POST 'http://localhost:8765/reindex'
+./setup.sh /ruta/al/proyecto --status   # estado (exit 1 si caído)
+./setup.sh /ruta/al/proyecto --down     # para; conserva volúmenes e índice
+```
+
+Modo **sin Docker**: `--local` / `-Local` crea un venv en `rag/.venv` y arranca
+`python -m rag.server`. Si no hay Ollama accesible lanza un contenedor
+auxiliar en `:11434` (o usa tu CLI `ollama`); sin Docker ni Ollama aborta con
+instrucciones.
+
+Re-indexa con:
+
+```bash
+curl -X POST 'http://localhost:8765/reindex'   # o el puerto que indique --status
 ```
 
 ### Opción B — Manual (sin Docker)

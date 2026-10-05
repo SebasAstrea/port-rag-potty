@@ -13,7 +13,7 @@ respuestas serán más precisas.
 ## 1. Verifica que el servicio RAG está levantado
 
 ```bash
-curl -s http://localhost:8765/health | head -50
+curl -s http://localhost:8766/health | head -50
 ```
 
 Si responde, sigue. Si no, levántalo:
@@ -21,11 +21,11 @@ Si responde, sigue. Si no, levántalo:
 ```bash
 cd <repo-root>
 pip install -r rag/requirements.txt
-python -m rag.server &          # arranca en :8765
+python -m rag.server &          # arranca en :8766
 # Espera ~2s a que arranque, luego indexa:
-curl -X POST 'http://localhost:8765/reindex'
+curl -X POST 'http://localhost:8766/reindex'
 # y comprueba que cuadra (drift debe ser 0):
-curl -s http://localhost:8765/stats | python -m json.tool
+curl -s http://localhost:8766/stats | python -m json.tool
 ```
 
 La primera indexación tarda 1-5 minutos (depende del tamaño de los chunks y de
@@ -44,7 +44,7 @@ si Ollama tiene `bge-m3` ya en memoria).
 ### 2.1. Lee el "alma" del proyecto (siempre)
 
 ```bash
-curl -s http://localhost:8765/methodology | python -m json.tool | head -120
+curl -s http://localhost:8766/methodology | python -m json.tool | head -120
 ```
 
 Te devuelve los chunks marcados como **methodology**: propósito, arquitectura,
@@ -55,8 +55,8 @@ modifiques nada sin haberlo leído al menos una vez en la sesión.**
 ### 2.2. Si el proyecto declara categorías, pide su ficha
 
 ```bash
-curl -s http://localhost:8765/categories | python -m json.tool     # qué categorías hay
-curl -s http://localhost:8765/category/<id> | python -m json.tool  # ficha de una
+curl -s http://localhost:8766/categories | python -m json.tool     # qué categorías hay
+curl -s http://localhost:8766/category/<id> | python -m json.tool  # ficha de una
 ```
 
 Las categorías (activo solo si `rag.config.json → graph` lo define, p.ej.
@@ -67,7 +67,7 @@ con `/query`.
 ### 2.3. Si necesitas buscar un patrón o entender "cómo se hace X"
 
 ```bash
-curl -s -X POST http://localhost:8765/query \
+curl -s -X POST http://localhost:8766/query \
   -H 'Content-Type: application/json' \
   -d '{"q": "cómo se configura el despliegue", "k": 5}'
 ```
@@ -82,13 +82,13 @@ Parámetros útiles:
 
 ```bash
 # ¿Qué archivos y tokens componen una categoría?
-curl -s http://localhost:8765/related/category/<id> | python -m json.tool
+curl -s http://localhost:8766/related/category/<id> | python -m json.tool
 
 # ¿Qué archivos importa la página de entrada?
-curl -s http://localhost:8765/related/file/index.html | python -m json.tool
+curl -s http://localhost:8766/related/file/index.html | python -m json.tool
 
 # ¿Qué categorías definen este token? (solo si hay tokens, p.ej. CSS)
-curl -s http://localhost:8765/related/token/--bg | python -m json.tool
+curl -s http://localhost:8766/related/token/--bg | python -m json.tool
 ```
 
 `/related/{kind}/<id>` con `kind ∈ {category, file, token}` devuelve los vecinos
@@ -104,8 +104,8 @@ a 1 salto en el grafo.
 
 2. **Tras modificar un archivo, re-indexa (incremental):**
    ```bash
-   curl -X POST 'http://localhost:8765/reindex'
-   curl -s http://localhost:8765/stats | python -m json.tool   # drift debe ser 0
+   curl -X POST 'http://localhost:8766/reindex'
+   curl -s http://localhost:8766/stats | python -m json.tool   # drift debe ser 0
    ```
    El indexador detecta cambios por mtime y re-embebe solo lo necesario.
 
@@ -124,7 +124,7 @@ a 1 salto en el grafo.
 3. **Si añades una categoría nueva** (temas CSS, módulos, etc.):
    - Declara su detección en `rag.config.json → graph` (regex de bloques y
      menciones; ver `rag/README.md`).
-   - `curl -X POST 'http://localhost:8765/reindex'` (incremental; no hace falta
+   - `curl -X POST 'http://localhost:8766/reindex'` (incremental; no hace falta
      `force`).
 
 4. **Si añades un token nuevo** que deba estar en el grafo (CSS `--token`, etc.):
@@ -176,7 +176,7 @@ export OLLAMA_HOST=http://localhost:11434    # URL de tu contenedor Ollama
 export RAG_EMBED_MODEL=bge-m3                # modelo de embeddings
 export RAG_EMBED_DIM=1024                    # dimensión (default de bge-m3)
 export RAG_HOST=0.0.0.0
-export RAG_PORT=8765
+export RAG_PORT=8766
 export RAG_PROJECT=mi-proyecto               # override de project_name
 export RAG_COLLECTION=mi_proyecto_chunks     # override de collection
 ```
