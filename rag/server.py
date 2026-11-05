@@ -6,6 +6,9 @@ Endpoints:
   GET  /categories             → lista con resumen 1-línea
   GET  /category/{id}          → categoría + tokens + archivos + chunks
   POST /query                  → búsqueda semántica {q, k, category?, file_glob?}
+  POST /route                  → decide RAG vs lectura directa (router)
+  POST /route/feedback         → coste real observado (calibra el router)
+  GET  /route/stats            → calibración + ahorro observado
   GET  /related/{kind}/{id}    → vecinos del grafo (category|file|token)
   POST /reindex                → reconstruir índice (admin)
   GET  /stats                  → estadísticas del sistema
@@ -29,6 +32,7 @@ from . import config
 from . import embeddings
 from . import graph as graph_mod
 from . import indexer
+from . import router as router_mod
 
 log = logging.getLogger("rag.server")
 logging.basicConfig(level=os.environ.get("RAG_LOG_LEVEL", "INFO"))
@@ -51,6 +55,14 @@ REINDEX_STATE: dict[str, Any] = {
 async def lifespan(app: FastAPI):
     app.state.chroma = chromadb.PersistentClient(path=str(config.CHROMA_DIR))
     app.state.graph = graph_mod.Graph.load(config.GRAPH_FILE)
+    # Router: colección y grafo se resuelven en cada llamada para sobrevivir a
+    # un /reindex (que reemplaza app.state.graph) sin reiniciar el proceso.
+    app.state.router = router_mod.QueryRouter(
+        project_root=config.PROJECT_ROOT,
+        collection=lambda: _collection(),
+        graph=lambda: _graph(),
+        embed=embeddings.embed_texts,
+    )
     log.info("RAG server up · proyecto=%s Ollama=%s model=%s chroma=%s",
              config.PROJECT_NAME, config.OLLAMA_HOST, config.EMBED_MODEL, config.CHROMA_DIR)
     yield
@@ -58,7 +70,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=f"RAG portable · {config.PROJECT_NAME}",
-    version="2.0",
+    version="2.1",
     description="Servicio RAG local con bge-m3 + ChromaDB + grafo ligero (portable).",
     lifespan=lifespan,
 )
@@ -105,6 +117,48 @@ class QueryResp(BaseModel):
     elapsed_ms: float
 
 
+class RouteReq(BaseModel):
+    q: str = Field(..., description="Pregunta o tarea del agente.")
+    k: int = Field(5, ge=1, le=20, description="k que usaría /query.")
+    category: str | None = Field(None, description="Filtro de /query (opcional).")
+    file_glob: str | None = Field(None, description="Filtro de /query (opcional).")
+    include_methodology: bool | None = Field(
+        None,
+        description="None = sí, salvo que methodology_loaded=true.",
+    )
+    methodology_loaded: bool = Field(
+        False, description="El 'alma' ya está en contexto: no se paga otra vez."
+    )
+    candidate_files: list[str] | None = Field(
+        None, description="Archivos/globs que el agente ya conoce (paths relativos)."
+    )
+    loaded_files: list[str] | None = Field(
+        None, description="Archivos ya leídos en esta sesión (coste 0)."
+    )
+    read_ratio: float | None = Field(
+        None, ge=0.05, le=3.0,
+        description="Fracción del archivo que se leerá (1.0 = completo).",
+    )
+    token_budget: int | None = Field(None, ge=1, description="Presupuesto restante.")
+    probe: bool = Field(True, description="Probe semántico interno (no cuesta tokens).")
+    allow_hybrid: bool | None = Field(None, description="Permitir plan híbrido.")
+    min_savings: int | None = Field(None, ge=0, description="Margen mínimo para RAG.")
+    compact: bool = Field(True, description="Respuesta mínima (~100-150 tok).")
+
+
+class RouteFeedbackReq(BaseModel):
+    decision_id: str | None = Field(None, description="id devuelto por /route.")
+    chosen_action: str | None = Field(None, description="rag | direct | hybrid.")
+    actual_rag_tokens: float | None = Field(None, ge=0)
+    actual_direct_tokens: float | None = Field(None, ge=0)
+    actual_total_tokens: float | None = Field(None, ge=0)
+    needed_followup: bool | None = Field(
+        None, description="RAG no bastó y hubo que leer el archivo."
+    )
+    answer_ok: bool | None = None
+    notes: str | None = None
+
+
 def _chunkout(meta: dict, doc: str | None, cid: str,
               score: float | None = None, max_chars: int = 600) -> ChunkOut:
     return ChunkOut(
@@ -136,6 +190,10 @@ async def health():
             "tokens": len(g.tokens),
             "files": len(g.files),
             "edges": len(g.edges),
+        },
+        "router": {
+            "enabled": bool(config.ROUTER.get("enabled", True)),
+            "calibration": app.state.router.cal.summary(),
         },
         "config": {
             "project": config.PROJECT_NAME,
@@ -293,6 +351,79 @@ async def query(req: QueryReq):
         methodology_chunks=methodology_chunks,
         elapsed_ms=round((time.time() - t0) * 1000, 1),
     )
+
+
+# ── /route (RAG vs lectura directa) ───────────────────────────────────────
+@app.post("/route")
+async def route(req: RouteReq):
+    """Decide si conviene usar /query o leer archivos con tool_calling.
+
+    El probe semántico es interno: no devuelve chunks, sólo se usa para
+    estimar el coste real de /query y descubrir los archivos candidatos.
+    """
+    if not config.ROUTER.get("enabled", True):
+        raise HTTPException(404, "Router desactivado en rag.config.json → router.enabled")
+
+    r: router_mod.QueryRouter = app.state.router
+    include_m = req.include_methodology
+    if req.methodology_loaded:
+        include_m = False
+    elif include_m is None:
+        include_m = True
+
+    if req.probe:
+        probe = await r.probe(
+            req.q,
+            k=max(req.k, int(r.cfg.get("probe_k", 12))),
+            include_methodology=bool(include_m),
+            category=req.category,
+            file_glob=req.file_glob,
+        )
+    else:
+        # Explícito: no hacer probe (ni semántico ni lexical).
+        probe = router_mod.ProbeResult(source="none")
+
+    return r.decide(
+        req.q,
+        k=req.k,
+        include_methodology=include_m,
+        methodology_loaded=req.methodology_loaded,
+        candidate_files=req.candidate_files,
+        loaded_files=req.loaded_files,
+        read_ratio=req.read_ratio,
+        token_budget=req.token_budget,
+        probe=probe,
+        allow_hybrid=req.allow_hybrid,
+        min_savings=req.min_savings,
+        compact=req.compact,
+        category=req.category,
+        file_glob=req.file_glob,
+    )
+
+
+@app.post("/route/feedback")
+async def route_feedback(req: RouteFeedbackReq):
+    """Registra el coste real observado y recalibra el router."""
+    if not config.ROUTER.get("enabled", True):
+        raise HTTPException(404, "Router desactivado en rag.config.json → router.enabled")
+    r: router_mod.QueryRouter = app.state.router
+    return r.record_feedback(
+        decision_id=req.decision_id,
+        chosen_action=req.chosen_action,
+        actual_rag_tokens=req.actual_rag_tokens,
+        actual_direct_tokens=req.actual_direct_tokens,
+        actual_total_tokens=req.actual_total_tokens,
+        needed_followup=req.needed_followup,
+        answer_ok=req.answer_ok,
+        notes=req.notes,
+    )
+
+
+@app.get("/route/stats")
+async def route_stats():
+    """Calibración actual y ahorro/regret observados con feedback."""
+    r: router_mod.QueryRouter = app.state.router
+    return r.stats()
 
 
 # ── /related/{kind}/{id} ──────────────────────────────────────────────────

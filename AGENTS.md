@@ -41,7 +41,33 @@ si Ollama tiene `bge-m3` ya en memoria).
 
 ## 2. Antes de CUALQUIER modificación, invoca estos endpoints
 
-### 2.1. Lee el "alma" del proyecto (siempre)
+### 2.1. Decide la vía antes de leer archivos: RAG o lectura directa
+
+El RAG **no siempre ahorra** (12/33 consultas medidas costaban más que leer el
+archivo; el cruce está en ~1,7-2k tokens de destino). Si la tarea no es trivial
+y no sabes si el destino es pequeño o grande, pregunta al router:
+
+```bash
+curl -s -X POST http://localhost:8766/route \
+  -H 'Content-Type: application/json' \
+  -d '{"q": "<tu pregunta>", "k": 5, "methodology_loaded": false}'
+```
+
+Sigue `action`:
+
+- **`direct`** → lee **solo** los `read[].path` indicados (es más barato que RAG).
+- **`rag`** → usa `POST /query` con `rag.k` y `rag.methodology`.
+- **`hybrid`** → `/query` y después lee el top-1 indicado.
+
+No pagues dos veces el mismo contexto: pasa `methodology_loaded=true` si ya
+tienes el «alma» en la sesión, y `loaded_files` con lo que ya hayas leído.
+Si usaste el router, cierra el bucle con `POST /route/feedback` (tokens reales
+y `needed_followup`). **No llames al router** si ya sabes que el archivo es
+diminuto (<1k tokens) o ya lo tienes cargado: leerlo directo gana.
+
+Detalle: [`docs/ROUTER.md`](docs/ROUTER.md).
+
+### 2.2. Lee el "alma" del proyecto (siempre)
 
 ```bash
 curl -s http://localhost:8766/methodology | python -m json.tool | head -120
@@ -52,7 +78,7 @@ estructura, convenciones y la guía de contribución (de `README.md`, `AGENTS.md
 y de los archivos `methodology.entire_files` de `rag.config.json`). **No
 modifiques nada sin haberlo leído al menos una vez en la sesión.**
 
-### 2.2. Si el proyecto declara categorías, pide su ficha
+### 2.3. Si el proyecto declara categorías, pide su ficha
 
 ```bash
 curl -s http://localhost:8766/categories | python -m json.tool     # qué categorías hay
@@ -64,7 +90,7 @@ temas CSS vía `data-theme`) agrupan archivos, scripts y tokens. Si
 `/categories` devuelve lista vacía, el proyecto no las usa: busca directamente
 con `/query`.
 
-### 2.3. Si necesitas buscar un patrón o entender "cómo se hace X"
+### 2.4. Si necesitas buscar un patrón o entender "cómo se hace X"
 
 ```bash
 curl -s -X POST http://localhost:8766/query \
@@ -78,7 +104,7 @@ Parámetros útiles:
 - `include_methodology`: `true` por defecto; inyecta el contexto del proyecto
 - `k`: 1-20 chunks (default 5)
 
-### 2.4. Para entender relaciones del grafo
+### 2.5. Para entender relaciones del grafo
 
 ```bash
 # ¿Qué archivos y tokens componen una categoría?
@@ -98,9 +124,10 @@ a 1 salto en el grafo.
 
 ## 3. Reglas de comportamiento
 
-1. **Lee los archivos completos solo cuando sea estrictamente necesario.** Si el
-   RAG te da el chunk relevante, lee solo ese + su contexto adyacente, no el
-   archivo entero.
+1. **Decide la vía antes de leer y no leas de más.** Usa `/route` cuando no
+   sepas si el destino es pequeño o grande; si el RAG te da el chunk
+   relevante, lee solo ese + su contexto adyacente, no el archivo entero. Si
+   el router dice `direct`, lee solo los `read[].path` que devuelve.
 
 2. **Tras modificar un archivo, re-indexa (incremental):**
    ```bash
@@ -146,6 +173,9 @@ a 1 salto en el grafo.
 | `GET`  | `/categories` | Lista de categorías con resumen 1-línea (si hay) |
 | `GET`  | `/category/{id}` | Ficha completa de una categoría (tokens + archivos + chunks) |
 | `POST` | `/query` | Búsqueda semántica `{q, k, category?, file_glob?}` |
+| `POST` | `/route` | Decide RAG vs lectura directa (+híbrido) antes de leer |
+| `POST` | `/route/feedback` | Coste real observado; recalibra el router |
+| `GET`  | `/route/stats` | Calibración y ahorro/regret observados |
 | `GET`  | `/related/{kind}/{id}` | Vecinos en el grafo (`kind ∈ {category, file, token}`) |
 | `POST` | `/reindex` | Reindexar (incremental + reconciliación; `409` si ya hay uno) |
 | `GET`  | `/stats` | Estadísticas + `drift` + estado del reindex |
@@ -163,6 +193,8 @@ categorías/tokens; si no, lo deja desactivado). Edítalo cuando necesites:
 - `index_globs` / `exclude_dirs` / `exclude_files` — qué se indexa y qué no
 - `chunkers` — ext → chunker (css, js, py, md, yaml, toml, raw…)
 - `methodology` — `entire_files` y `heading_patterns` ("alma" del proyecto)
+- `router` — umbrales del router (`min_savings_tokens`, `decision_cost_tokens`,
+  `rag_miss_rate`…); ver `docs/ROUTER.md`
 - `graph` — regex de categorías/tokens y archivo de resúmenes (p.ej. temas CSS)
 - `chunk_sizes` / `chunk_overlap` / `embed_text_max_chars` — presupuestos
 

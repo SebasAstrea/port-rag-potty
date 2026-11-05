@@ -45,6 +45,7 @@ Mann-Whitney) están en **[`docs/benchmarks/REPORT.md`](docs/benchmarks/REPORT.m
 | Sesión completa (alma + 1 consulta) | KGuard 18 214 → **6 258 tok (×2,9)** · VisionRT 41 767 → **9 328 (×4,5)** |
 | Latencia `/query` (n=100/proyecto) | p50 ≈ 42 ms, **p95 ≤ 50 ms** |
 | Embeddings bge-m3 (566,7M, F16, dim 1024) | **~30 ms/consulta**, 9,1 txt/s en CPU (batch sin beneficio) |
+| **Router RAG vs lectura directa** (replay n=33) | **52 824 tok** vs 59 006 de «siempre RAG» (**−10,5 %**), 90,9 % de decisiones correctas |
 
 ![Distribución del ahorro de tokens](docs/benchmarks/figs/fig02_savings_hist.png)
 
@@ -53,6 +54,35 @@ ahorro es **condicional al tamaño del destino** (cruza por cero en ~1,7-2k
 tokens) —12 de33 consultas medidas gastan más que la lectura directa. El
 antiguo claim «80-150k → 3-5k» estaba desviado en ambas direcciones (detalle
 en el informe).
+
+---
+
+## Router: decide antes de leer
+
+Como el RAG **no siempre ahorra**, el motor trae un router que estima el coste
+de ambas vías y elige la más barata antes de que el agente lea nada:
+
+```bash
+curl -s -X POST http://localhost:8766/route \
+  -H 'Content-Type: application/json' \
+  -d '{"q":"¿Cómo funciona el frame gate latest-only?","k":5}'
+```
+
+```json
+{"id":"rt_4f6a2c91ab","action":"direct","conf":0.86,"save":1180,
+ "why":"small_target","read":[{"path":".../LatestOnlyFrameGate.kt","tok":420}]}
+```
+
+- `action=direct` → leer sólo `read[].path` (destino < ~1,7-2k tok).
+- `action=rag` → `POST /query` (destino grande; el RAG ahorra).
+- `action=hybrid` → RAG para localizar + leer el top-1.
+- Si el agente ya cargó el «alma» o archivos, lo indica (`methodology_loaded`,
+  `loaded_files`) y el router no los vuelve a contar.
+- `POST /route/feedback` registra los tokens reales y **recalibra** el modelo.
+
+En el replay de las 33 consultas, el router gasta **52 824 tok** frente a
+**59 006** de «siempre RAG» (**−10,5 %**) y acierta la vía en **90,9 %**.
+Detalle, matemática y limitaciones: **[`docs/ROUTER.md`](docs/ROUTER.md)**.
 
 ---
 
@@ -218,6 +248,7 @@ benchmarks/           ← suite de benchmark (33 consultas, tests de hipótesis)
 docs/benchmarks/      ← informe estadístico + figuras + resultados crudos
 rag/
   server.py           ← API HTTP (FastAPI)
+  router.py           ← decide RAG vs lectura directa + calibración
   indexer.py          ← chunk + embed + upsert + reconciliación
   chunker.py          ← parseo semántico por tipo de archivo
   graph.py            ← grafo categorías↔tokens↔archivos (JSON)
@@ -226,6 +257,8 @@ rag/
   requirements.txt    ← dependencias Python
   Dockerfile          ← imagen del servicio
   README.md           ← documentación técnica del motor
+tests/                ← tests unitarios (router, sin Ollama/Chroma)
+docs/ROUTER.md        ← matemática, API y límites del router
 ```
 
 ---

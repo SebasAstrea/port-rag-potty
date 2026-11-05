@@ -6,7 +6,9 @@ proyecto** y sirve contexto curado del proyecto a agentes de IA, reduciendo
 
 Motor: **bge-m3** (embeddings vía Ollama) + **ChromaDB** (vector store
 embebido) + **grafo ligero JSON** (relaciones categoría↔token↔archivo,
-configurable por regex).
+configurable por regex). Incluye un **router de decisión** (`POST /route`) que
+estima si conviene usar RAG o leer el archivo directo antes de gastar tokens:
+ver [`../docs/ROUTER.md`](../docs/ROUTER.md).
 
 No sabe nada de "temas CSS" ni de ningún proyecto concreto: todo lo específico
 se declara en **`<PROJECT_ROOT>/rag.config.json`**, auto-generado en el primer
@@ -63,6 +65,12 @@ curl -s -X POST http://localhost:8765/query \
   -H 'Content-Type: application/json' \
   -d '{"q": "cómo se configura el despliegue", "k": 5}' \
   | python -m json.tool
+
+# ¿RAG o lectura directa? (decide antes de leer)
+curl -s -X POST http://localhost:8765/route \
+  -H 'Content-Type: application/json' \
+  -d '{"q": "cómo se configura el despliegue", "k": 5}' \
+  | python -m json.tool
 ```
 
 `POST /reindex?force=true` solo si `/stats` deja `drift != 0` tras un reindex
@@ -100,6 +108,7 @@ puede dejar fuera para usar su default.
 | `methodology.entire_files` | `["AGENTS.md", "CLAUDE.md", ".cursorrules"]` | Documentos completos "alma" |
 | `methodology.heading_patterns` | `[]` | Prefijos explícitos de secciones methodology (si vacío, se infieren) |
 | `methodology.infer_keywords` | lista es/en | Keywords de inferencia de secciones |
+| `router` | ver `config.ROUTER_DEFAULT` | Umbrales y coeficientes del router RAG vs directo (`enabled`, `min_savings_tokens`, `decision_cost_tokens`, `rag_miss_rate`…) |
 | `graph.block_regex` | CSS `data-theme` | Regex categoría+bloque (grupo 1=cat, 2=cuerpo) |
 | `graph.token_regex` | CSS `--token:` | Tokens dentro de bloques |
 | `graph.mention_regex` | `data-theme` | Menciones sueltas de categoría |
@@ -140,8 +149,8 @@ puede dejar fuera para usar su default.
 │                    rag.server (FastAPI)                          │
 │                                                                  │
 │   /methodology  /categories  /category/<id>                      │
-│   /query        /related/<kind>/<id>                             │
-│   /reindex      /health  /stats                                 │
+│   /query        /route       /route/feedback                     │
+│   /related/<kind>/<id>  /reindex  /health  /stats                │
 └────────┬─────────────────────────────────────────┬───────────────┘
          │                                         │
 ┌────────▼──────────────────┐         ┌─────────────▼───────────────┐
@@ -217,6 +226,23 @@ Si el proyecto no declara categorías, `/categories` devuelve lista vacía.
 
 Respuesta: `results` (chunks rankeados con score cosine) + `methodology_chunks`
 (inyección automática de contexto del proyecto).
+
+### `POST /route` — ¿RAG o lectura directa?
+
+```json
+{ "q": "¿cómo funciona X?", "k": 5, "candidate_files": ["src/x.py"],
+  "methodology_loaded": false, "loaded_files": [], "compact": true }
+```
+
+Devuelve `action ∈ {rag, direct, hybrid}` con el plan mínimo para ejecutarlo
+(`read[].path` o `rag.k/methodology`), `conf` y `save` (ahorro neto estimado).
+El probe semántico interno **no** devuelve chunks: no cuesta tokens al agente.
+
+- `POST /route/feedback` — coste real observado; recalibra el router
+  (`rag/data/router_calibration.json`).
+- `GET /route/stats` — decisiones, calibración y ahorro/regret observados.
+
+Detalle completo: [`../docs/ROUTER.md`](../docs/ROUTER.md).
 
 ### `GET /related/{kind}/{id}`
 
@@ -307,6 +333,9 @@ Ejecución: el volumen monta el código real del proyecto en `/app`; el
 
 ## 7. Roadmap (próximas fases)
 
+- **Router de decisión (implementado)**: `/route` estima RAG vs lectura
+  directa, se auto-calibra con feedback y se integra en el flujo de `AGENTS.md`
+  (ver [`../docs/ROUTER.md`](../docs/ROUTER.md)).
 - **Fase 3 — Watcher + caché**: daemon con `watchdog` que re-indexa
   automáticamente al cambiar archivos; caché SQLite de queries frecuentes.
 - **Fase 4 — MCP server**: wrapper MCP para que Claude/Cursor/Cline consuman

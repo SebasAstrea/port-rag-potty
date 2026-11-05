@@ -37,6 +37,9 @@ DATA_DIR: Path = RAG_DIR / "data"
 CHROMA_DIR: Path = DATA_DIR / "chroma"
 GRAPH_FILE: Path = DATA_DIR / "graph.json"
 MANIFEST_FILE: Path = DATA_DIR / "manifest.json"
+ROUTER_CALIBRATION_FILE: Path = DATA_DIR / "router_calibration.json"
+ROUTER_DECISIONS_FILE: Path = DATA_DIR / "router_decisions.jsonl"
+ROUTER_FEEDBACK_FILE: Path = DATA_DIR / "router_feedback.jsonl"
 
 CONFIG_FILE: Path = PROJECT_ROOT / "rag.config.json"
 
@@ -139,6 +142,58 @@ GRAPH_DEFAULT: dict = {
     "html_entry": "index.html",
 }
 
+# ── Router de decisión RAG vs lectura directa ────────────────────────────────
+# El router estima el coste (tokens) de cada vía antes de que el agente lea
+# nada. Los defaults están calibrados con el benchmark de 33 consultas
+# (docs/benchmarks/results/tokens.json); el feedback real los ajusta.
+ROUTER_DEFAULT: dict = {
+    "enabled": True,
+    # Descubrimiento de candidatos: k del probe semántico (no cuesta tokens al
+    # agente; sólo una consulta interna a Chroma + Ollama).
+    "probe_k": 12,
+    # Si Ollama/Chroma no responden en este tiempo, el probe cae a lexical.
+    # (Una consulta real tarda ~30-50 ms; 5 s cubre incluso el arranque en frío.)
+    "probe_timeout_s": 5.0,
+    # Tras un fallo/timeout del probe semántico, no se reintenta durante este
+    # tiempo: evita pagar 5 s en cada decisión cuando Ollama está caído.
+    "probe_cooldown_s": 30.0,
+    # TTL de la lista de archivos usada por el probe lexical (evita recorrer
+    # el árbol del proyecto en cada decisión si no hay grafo).
+    "lexical_cache_s": 30.0,
+    # Como máximo se estima la lectura directa de estos archivos.
+    "max_direct_files": 3,
+    # Se para de añadir archivos cuando el score cae por debajo de este
+    # porcentaje del mejor candidato.
+    "direct_score_floor": 0.45,
+    # RAG debe ganar por este margen para elegirse (evita decisiones ruidosas).
+    "min_savings_tokens": 60,
+    # Coste estimado de la propia respuesta compacta de /route (se descuenta
+    # del ahorro). Medido: ~40-80 tok según longitud de paths.
+    "decision_cost_tokens": 80,
+    # Estimación global (se sustituye por el payload exacto si hay probe).
+    "base_tokens": 110,
+    "per_result_tokens": 220,
+    "methodology_tokens": 470,
+    # Coste de abrir un archivo con la tool de lectura (envoltorio/metadata).
+    "direct_overhead_tokens": 25,
+    # 1.0 = leer el archivo completo (baseline del benchmark). El feedback lo
+    # ajusta si el agente suele leer sólo fragmentos.
+    "direct_read_ratio": 1.0,
+    # Probabilidad de que el top-k no baste y haya que leer el archivo igual.
+    "rag_miss_rate": 0.05,
+    # Llamada extra de fallback cuando RAG falla.
+    "fallback_penalty_tokens": 80,
+    # Permite recomendar "RAG + leer el top-1" cuando sale mejor que leer todos.
+    "allow_hybrid": True,
+    # Guarda decisiones/feedback en rag/data/router_*.jsonl (privado, local).
+    "log_decisions": True,
+    # No leer completos archivos enormes al estimar (se estima por tamaño).
+    "max_file_bytes": 2_000_000,
+    # tiktoken es opcional; sin él se aproxima por caracteres.
+    "tokenizer": "auto",  # auto | tiktoken | heuristic
+}
+
+
 # ── Configuración del proyecto (rag.config.json) ─────────────────────────────
 def _default_chunk_sizes() -> dict:
     return {
@@ -203,6 +258,7 @@ def bootstrap_config() -> dict:
             "heading_patterns": [],
             "infer_keywords": list(METHODOLOGY_INFER_KEYWORDS_DEFAULT),
         },
+        "router": dict(ROUTER_DEFAULT),
         "graph": _default_graph({}),
     }
     try:
@@ -308,6 +364,9 @@ METHODOLOGY_HEADING_PATTERNS: tuple[str, ...] = tuple(_get("methodology.heading_
 METHODOLOGY_INFER_KEYWORDS: tuple[str, ...] = tuple(
     _get("methodology.infer_keywords", METHODOLOGY_INFER_KEYWORDS_DEFAULT)
 )
+
+# ── Router (configurable por proyecto) ───────────────────────────────────────
+ROUTER: dict = {**ROUTER_DEFAULT, **_get("router", {})}
 
 _METHODOLOGY_BASENAMES = frozenset({"readme.md", "readme", "agents.md", "agents", "claude.md", "cursorrules"})
 

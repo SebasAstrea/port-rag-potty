@@ -28,6 +28,7 @@ python3 run_tokens.py                 # pasos sueltos (mismos flags que arriba)
 python3 run_retrieval.py
 python3 run_latency.py
 python3 run_embedding.py
+python3 run_router.py                 # replay del router sobre tokens.json
 python3 figures.py                    # regenera figs/ desde results/*.json
 ```
 
@@ -46,6 +47,7 @@ benchmarks/
 ├── run_retrieval.py   # H2: MRR/P@5/R@5/nDCG + test de permutación vs azar
 ├── run_latency.py     # percentiles /query|/methodology|/stats + Mann-Whitney
 ├── run_embedding.py   # bge-m3: latencia vs longitud, throughput, metadatos
+├── run_router.py      # replay del router RAG vs directo sobre tokens.json
 ├── run_all.py         # orquestador
 └── figures.py         # figuras del informe
 ```

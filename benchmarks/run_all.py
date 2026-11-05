@@ -13,7 +13,13 @@ import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-STEPS = ["run_tokens.py", "run_retrieval.py", "run_latency.py", "run_embedding.py"]
+STEPS = [
+    "run_tokens.py",
+    "run_retrieval.py",
+    "run_latency.py",
+    "run_embedding.py",
+    "run_router.py",
+]
 
 
 def main() -> None:

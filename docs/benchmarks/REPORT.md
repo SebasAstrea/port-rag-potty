@@ -273,7 +273,37 @@ latencia de consulta perceptiblemente** (30 ms ya son despreciables).
 
 ---
 
-## 10. Reproducción
+## 10. Router de decisión: cuándo leer directo
+
+El motor implementa `POST /route` (ver [`../ROUTER.md`](../ROUTER.md)): antes
+de leer, estima el coste de `/query` y el de los archivos candidatos (probe
+interno sin coste de tokens para el agente), modela el riesgo de fallo
+`p_miss` y elige `rag`, `direct` o `hybrid`. El replay sobre los costes reales
+A/B de este benchmark (n=33, 80 tok de coste de decisión) da:
+
+| Estrategia | Tokens | Ahorro vs siempre RAG | Regret vs oráculo |
+|---|---:|---:|---:|
+| Siempre RAG | 59 006 | — | +8 950 |
+| Siempre directo | 109 283 | −50 277 | +59 227 |
+| **Router (modelo por defecto)** | **52 824** | **+6 182 (10,5 %)** | **+2 768** |
+| Router (B exacto, cota) | 52 872 | +6 134 | +2 816 |
+| Oráculo (`min(A,B)`) | 50 056 | — | — |
+
+- Aciertos de vía: **90,9 %** (22 RAG, 11 directo); con B exacto, 93,9 %.
+- Captura el **69,1 %** del ahorro del oráculo.
+- En el subgrupo A < 2k el router cuesta 16 468 vs 15 505 de leer siempre
+  directo (−963): es casi exactamente el coste de las 14 decisiones
+  (14 × 80 = 1 120). Aun así evita la mayor parte del desperdicio del RAG
+  (24 170). En A ≥ 2k pierde sólo el coste de decisión (19 × 80 = 1 520)
+  porque RAG gana casi siempre.
+
+> La calibración por defecto se sembró con este mismo benchmark: el replay es
+> **in-sample**. El feedback real (`/route/feedback`) adapta los coeficientes
+> a cada proyecto. Datos crudos: [`results/router.json`](results/router.json).
+
+---
+
+## 11. Reproducción
 
 ```bash
 cd benchmarks
@@ -288,6 +318,7 @@ python3 run_all.py --skip-embedding  # sin el bench de Ollama (~1 min)
 | `run_retrieval.py` | H2 — P@1/R@5/MRR/nDCG + test de permutación vs azar |
 | `run_latency.py` | Percentiles de `/query`, `/methodology`, `/stats` + Mann-Whitney |
 | `run_embedding.py` | Latencia/throughput de bge-m3 dentro del contenedor (docker exec) |
+| `run_router.py` | Replay del router RAG vs directo sobre `tokens.json` |
 | `figures.py` | Las7 figuras de este informe |
 | `datasets/*.json` |33 consultas curadas con ground-truth verificado |
 
